@@ -1,0 +1,7 @@
+output "instance_private_ip" {
+  value = azurerm_linux_virtual_machine.priv_instance[*].private_ip_address
+}
+
+output "instance_IDs" {
+  value = azurerm_linux_virtual_machine.priv_instance[*].id
+}

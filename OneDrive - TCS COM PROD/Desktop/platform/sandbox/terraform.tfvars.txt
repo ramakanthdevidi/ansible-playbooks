@@ -1,0 +1,20 @@
+Name = "test"
+Owner = "TCS"
+mailID = "platformEngineering@gmail.com" 
+storage_size = "10" // Represents the size of the disk in GB
+vm_size = "Standard_B1s" // Equivalent to InstanceType; adjust as necessary for Azure VM sizes
+image_reference = { 
+  publisher = "Canonical" 
+  offer     = "UbuntuServer" 
+  sku       = "20.04-LTS" 
+  version   = "latest" 
+} // Replace with the appropriate Azure image reference
+admin_username = "nextgen-devops-team" // Equivalent to key_name (admin user for VM)
+instance_count = 2
+nsg_public_name = "My-Pub-SG" // Public NSG name
+nsg_private_name = "My-Pri-SG" // Private NSG name
+resource_group_name = "my-resource-group" // Replace with your actual resource group name
+virtual_network_name = "my-vnet" // Replace with your actual VNet name
+private_subnets = ["private-subnet-1", "private-subnet-2"] // Adjust subnet names accordingly
+public_subnets = ["public-subnet-1", "public-subnet-2"] // Adjust subnet names accordingly
+CIDR = "10.63.0.0/16" // VNet address space

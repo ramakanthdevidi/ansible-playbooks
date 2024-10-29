@@ -1,0 +1,14 @@
+variable "name_prefix" {}
+variable "owner" {}
+variable "mail_id" {}
+variable "vm_size" {}
+variable "storage_size" {}
+variable "admin_username" {}
+variable "admin_password" {}
+variable "instance_count" {}
+variable "resource_group_name" {}
+variable "location" {}
+variable "subnet_id" {}
+variable "vm_image" {
+  type = map(string)
+}

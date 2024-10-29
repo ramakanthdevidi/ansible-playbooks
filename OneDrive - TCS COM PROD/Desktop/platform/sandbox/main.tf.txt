@@ -1,0 +1,52 @@
+provider "azurerm" {
+  features {}
+}
+
+# Private instance creation
+
+resource "azurerm_linux_virtual_machine" "priv_instance" {
+  count                = var.instance_count
+  name                 = "${var.name_prefix}-${count.index + 1}"
+  resource_group_name  = var.resource_group_name
+  location            = var.location
+  size                = var.vm_size
+  admin_username      = var.admin_username
+  admin_password      = var.admin_password
+
+  network_interface_ids = [azurerm_network_interface.nic[count.index].id]
+
+  os_disk {
+    caching        = "ReadWrite"
+    create_option = "FromImage"
+    disk_size_gb  = var.storage_size
+  }
+
+  source_image_reference {
+    publisher = var.image_reference.publisher
+    offer     = var.image_reference.offer
+    sku       = var.image_reference.sku
+    version   = var.image_reference.version
+  }
+
+  custom_data = file("./myscript.sh")
+
+  tags = {
+    Name   = "${var.name_prefix}-${count.index + 1}"
+    Owner  = var.owner
+    mailID = var.mail_id
+  }
+}
+
+# Network Interface
+resource "azurerm_network_interface" "nic" {
+  count               = var.instance_count
+  name                = "${var.name_prefix}-nic-${count.index + 1}"
+  location            = var.location
+  resource_group_name = var.resource_group_name
+
+  ip_configuration {
+    name                          = "internal"
+    subnet_id                    = element(var.private_subnets, count.index) // Adjust to your Azure subnet ID
+    private_ip_address_allocation = "Dynamic"
+  }
+}

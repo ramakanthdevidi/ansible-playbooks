@@ -1,0 +1,37 @@
+resource "azurerm_network_security_group" "security_sg" {
+  name                = "example-sg-109"
+  location            = var.location // Specify the Azure region
+  resource_group_name = var.resource_group_name
+  tags                = {
+    Description = "Kubernetes Security Group"
+  }
+}
+
+# Inbound rules
+resource "azurerm_network_security_rule" "inbound_rules" {
+  count                    = 6
+  name                     = "allow-${element(["ssh", "http", "http-alt", "kube", "kube-alt", "3000"], count.index)}"
+  priority                 = 100 + count.index  // Unique priority for each rule
+  direction                = "Inbound"
+  access                   = "Allow"
+  protocol                 = "Tcp"
+  source_port_range        = "*"
+  destination_port_range   = element([22, 80, 8080, 9000, 9090, 3000], count.index)
+  source_address_prefix    = var.CIDR
+  destination_address_prefix = "*"
+  network_security_group_id = azurerm_network_security_group.security_sg.id
+}
+
+# Outbound rules
+resource "azurerm_network_security_rule" "egress_rules" {
+  name                     = "allow-egress"
+  priority                 = 200
+  direction                = "Outbound"
+  access                   = "Allow"
+  protocol                 = "*"
+  source_port_range        = "*"
+  destination_port_range   = "*"
+  source_address_prefix    = "*"
+  destination_address_prefix = "*"
+  network_security_group_id = azurerm_network_security_group.security_sg.id
+}
