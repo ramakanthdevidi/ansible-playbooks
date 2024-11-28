@@ -1,0 +1,45 @@
+---
+- name: Install docker
+  hosts: localhost
+  become: true
+  tasks: 
+      - name: Remove old files
+        become: true
+        shell: for pkg in docker.io docker-doc docker-compose podman-docker containerd runc; do sudo apt-get remove $pkg; done
+
+      - name: Update nodes
+        become: true
+        apt:
+          update_cache: yes
+
+      - name: Install ca-certificates curl gnupg
+        become: true
+        shell: sudo apt-get install -y ca-certificates curl gnupg
+
+      - name: Install keys
+        become: true
+        shell: sudo install -m 0755 -d /etc/apt/keyrings
+
+      - name: Add packages
+        become: true
+        shell: curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+
+      - name: Add permissions
+        become: true
+        shell: sudo chmod a+r /etc/apt/keyrings/docker.gpg
+
+      - name: Add the repository to Apt sources
+        become: true
+        shell: echo \
+               "deb [arch="$(dpkg --print-architecture)" signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
+               "$(. /etc/os-release && echo "$VERSION_CODENAME")" stable" | \
+               sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+      - name: Update nodes1
+        become: true
+        apt:
+          update_cache: yes
+
+      - name: Install docker
+        become: true
+        shell: sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin

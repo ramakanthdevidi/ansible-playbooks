@@ -1,0 +1,20 @@
+---
+- name: Install projectlibre on cluster_nodes
+  hosts: cluster_nodes
+  tasks:
+    - name: update nodes
+      become: true
+      apt:
+        update_cache: yes
+
+    - name: Install snapd
+      become: true
+      apt:
+        name: snapd
+        state: present
+
+    - name: Install projectlibre
+      become: true
+      snap:
+        name: projectlibre
+        state: present

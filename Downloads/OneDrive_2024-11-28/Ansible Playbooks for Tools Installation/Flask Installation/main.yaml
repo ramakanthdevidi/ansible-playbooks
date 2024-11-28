@@ -1,0 +1,18 @@
+---
+- name: Install flask
+  hosts: all
+  become: true
+  tasks:
+    - name: Install python3, python3-pip, python3-venv
+      shell: sudo apt install python3 python3-pip python3-venv -y 
+
+    - name: install flask from python3-pip
+      shell: pip3 install Flask 
+
+    - name: Get version
+      shell: python3 -m flask --version 
+      register: info 
+
+    - name: Display version
+      debug:
+        var: info 

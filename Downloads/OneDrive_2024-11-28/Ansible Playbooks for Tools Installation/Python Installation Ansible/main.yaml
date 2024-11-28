@@ -1,0 +1,9 @@
+---
+- name: Install Python on all nodes
+  hosts: cluster_nodes
+  tasks:
+    - name: Install Python
+      become: true
+      apt:
+        name: python
+        state: present

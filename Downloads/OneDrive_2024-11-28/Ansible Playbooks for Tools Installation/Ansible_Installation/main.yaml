@@ -1,0 +1,9 @@
+---
+- name: Install Ansible in cluster nodes
+  hosts: cluster_nodes
+  tasks:
+    - name: Install Ansible
+      become: true
+      apt:
+        name: ansible
+        state: present

@@ -1,0 +1,52 @@
+---
+- name : Install spark on cluster nodes
+  hosts: cluster_nodes
+  tasks:
+    - name: Update nodes
+      become: true
+      apt:
+        update_cache: yes
+    
+    - name: Install default-jdk
+      become: true
+      apt:
+        name: default-jdk
+        state: present
+
+    - name: Download packages
+      shell: wget https://dlcdn.apache.org/spark/spark-3.4.0/spark-3.4.0-bin-hadoop3.tgz
+
+    - name: Extract files
+      shell: tar xvf spark-3.4.0-bin-hadoop3.tgz
+
+    - name: Move files
+      become: true
+      shell: sudo mv spark-3.4.0-bin-hadoop3 /opt/spark
+
+    - name: add line1
+      become: true
+      shell: sudo echo "export SPARK_HOME=/opt/spark" >> ~/.bashrc 
+
+    - name: add line1
+      become: true
+      shell: sudo echo "export PATH=$PATH:$SPARK_HOME/bin" >> ~/.bashrc
+
+    - name: start spark
+      become: true
+      shell: source ~/.bashrc
+
+    - name: Run spark
+      shell: spark-shell
+      register: spark_output
+
+    - name: Display output  
+      debug:
+        var: spark_output.stdout_lines
+
+    - name: Get version
+      shell: spark-submit --version
+      register: spark_version
+
+    - name: Display version
+      debug:
+        var: spark_version

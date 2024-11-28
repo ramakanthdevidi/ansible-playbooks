@@ -1,0 +1,25 @@
+---
+- name: Gerrit installation on cluster nodes
+  hosts: cluster_nodes
+  tasks:
+    - name: update nodes
+      become: true
+      apt:
+        update_cache: yes
+
+    - name: Install git, default-jdk
+      become: true
+      apt:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - git
+        - default-jdk
+    
+    - name: Dowload packages
+      shell: wget https://gerrit-releases.storage.googleapis.com/gerrit-3.5.1.war
+
+    - name: Intialize Gerrit
+      become: true
+      shell: sudo java -jar gerrit-3.5.1.war init --batch -d ~/gerrit_example
+

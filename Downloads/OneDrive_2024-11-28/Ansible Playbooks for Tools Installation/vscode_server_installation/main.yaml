@@ -1,0 +1,17 @@
+---
+- name: Install vs-code webserver
+  hosts: localhost
+  become: true
+  tasks:
+    - name: Delete old container
+      shell: docker rm rm -f code-server1
+       
+    - name: Run docker container
+      shell: >
+        docker run -d \
+        --name=code-server1 \
+        -e TZ=Etc/UTC \
+        -p 3000:8443 \
+        -v /home/ubuntu/config:/config \
+        --restart unless-stopped \
+        lscr.io/linuxserver/code-server:latest

@@ -1,0 +1,9 @@
+---
+- name: Install Mysql in cluster nodes
+  hosts: cluster_nodes
+  tasks:
+  - name: install mysql
+    become: true
+    apt:
+      name: mysql-server
+      state: present
